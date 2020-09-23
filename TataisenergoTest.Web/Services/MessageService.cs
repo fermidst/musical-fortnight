@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using TataisenergoTest.Infrastructure;
 using TataisenergoTest.Infrastructure.Models;
 
@@ -13,12 +10,10 @@ namespace TataisenergoTest.Web.Services
     public class MessageService : IMessageService
     {
         private readonly ApplicationContext _context;
-        private readonly ILogger<MessageService> _logger;
 
-        public MessageService(ApplicationContext context, ILogger<MessageService> logger)
+        public MessageService(ApplicationContext context)
         {
             _context = context;
-            _logger = logger;
         }
 
         public async Task<string> EncryptMessage(string content)
@@ -27,34 +22,9 @@ namespace TataisenergoTest.Web.Services
                 await _context.EncryptSettings.ToDictionaryAsync(setting => setting.OldValue,
                     setting => setting.NewValue);
 
-            var result = new StringBuilder(content);
-
-            // todo: probably should be refactored, high cyclomatic complexity
-            for (var i = 0; i < result.Length; i++)
-            {
-                if (char.IsUpper(result[i]))
-                {
-                    if (encryptPairs.TryGetValue(char.ToLower(result[i]), out var newValue))
-                    {
-                        result[i] = char.ToUpper(newValue);
-                    }
-                    else
-                    {
-                        _logger.LogError($"there is no new value for old value: {result[i]}");
-                    }
-                }
-                else
-                {
-                    if (encryptPairs.TryGetValue(result[i], out var newValue))
-                    {
-                        result[i] = newValue;
-                    }
-                    else
-                    {
-                        _logger.LogError($"there is no new value for old value: {result[i]}");
-                    }
-                }
-            }
+            // case-sensitive encryption, please, provide encrypt settings for all cases of letter
+            var encryptedChars = content.Select(c => encryptPairs.ContainsKey(c) ? encryptPairs[c] : c);
+            var result = string.Concat(encryptedChars);
 
             _context.Messages.Add(new Message
             {
@@ -62,7 +32,7 @@ namespace TataisenergoTest.Web.Services
             });
             await _context.SaveChangesAsync();
 
-            return result.ToString();
+            return result;
         }
     }
 }
