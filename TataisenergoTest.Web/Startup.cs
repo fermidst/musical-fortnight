@@ -26,6 +26,7 @@ namespace TataisenergoTest.Web
                 opt.UseSqlServer(Configuration.GetConnectionString("ApplicationContext")));
             services.AddScoped<IMessageService, MessageService>();
             services.AddSwaggerGen();
+            services.AddRouting(options => options.LowercaseUrls = true);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
