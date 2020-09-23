@@ -24,10 +24,11 @@ namespace TataisenergoTest.Web.Services
         public async Task<string> EncryptMessage(string content)
         {
             var encryptPairs =
-                _context.EncryptSettings.ToDictionary(setting => setting.OldValue, setting => setting.NewValue);
+                await _context.EncryptSettings.ToDictionaryAsync(setting => setting.OldValue,
+                    setting => setting.NewValue);
 
             var result = new StringBuilder(content);
-            
+
             // todo: probably should be refactored, high cyclomatic complexity
             for (var i = 0; i < result.Length; i++)
             {
@@ -44,7 +45,7 @@ namespace TataisenergoTest.Web.Services
                 }
                 else
                 {
-                    if (encryptPairs.TryGetValue(char.ToLower(result[i]), out var newValue))
+                    if (encryptPairs.TryGetValue(result[i], out var newValue))
                     {
                         result[i] = newValue;
                     }
