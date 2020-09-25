@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using TataisenergoTest.Web.Dtos;
 using TataisenergoTest.Web.Services;
@@ -16,6 +17,7 @@ namespace TataisenergoTest.Web.Controllers
             _messageService = messageService;
         }
 
+        [EnableCors("encrypt")]
         [HttpPost("encrypt")]
         public async Task<EncryptResponseDto> Encrypt(EncryptRequestDto requestDto)
         {

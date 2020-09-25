@@ -27,6 +27,14 @@ namespace TataisenergoTest.Web
             services.AddScoped<IMessageService, MessageService>();
             services.AddSwaggerGen();
             services.AddRouting(options => options.LowercaseUrls = true);
+            services.AddCors(options => 
+            {
+                options.AddPolicy("encrypt", builder =>
+                {
+                    builder.WithOrigins("http://localhost:8080")
+                        .AllowAnyHeader();
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,6 +54,8 @@ namespace TataisenergoTest.Web
             // app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthorization();
 
