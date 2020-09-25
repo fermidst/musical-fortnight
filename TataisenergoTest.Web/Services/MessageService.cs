@@ -9,28 +9,28 @@ namespace TataisenergoTest.Web.Services
 {
     public class MessageService : IMessageService
     {
-        private readonly ApplicationContext _context;
+        private readonly ApplicationDbContext _dbContext;
 
-        public MessageService(ApplicationContext context)
+        public MessageService(ApplicationDbContext dbContext)
         {
-            _context = context;
+            _dbContext = dbContext;
         }
 
         public async Task<string> EncryptMessage(string content)
         {
             var encryptPairs =
-                await _context.EncryptSettings.ToDictionaryAsync(setting => setting.OldValue,
+                await _dbContext.EncryptSettings.ToDictionaryAsync(setting => setting.OldValue,
                     setting => setting.NewValue);
 
             // case-sensitive encryption, please, provide encrypt settings for all cases of letter
             var encryptedChars = content.Select(c => encryptPairs.ContainsKey(c) ? encryptPairs[c] : c);
             var result = string.Concat(encryptedChars);
 
-            _context.Messages.Add(new Message
+            _dbContext.Messages.Add(new Message
             {
                 Content = content, CreatedAt = DateTime.UtcNow
             });
-            await _context.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
 
             return result;
         }

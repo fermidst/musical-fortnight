@@ -3,9 +3,9 @@ using TataisenergoTest.Infrastructure.Models;
 
 namespace TataisenergoTest.Infrastructure
 {
-    public class ApplicationContext : DbContext, IApplicationContext
+    public class ApplicationDbContext : DbContext, IApplicationDbContext
     {
-        public ApplicationContext(DbContextOptions options) : base(options)
+        public ApplicationDbContext(DbContextOptions options) : base(options)
         {
         }
 

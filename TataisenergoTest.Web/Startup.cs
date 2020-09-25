@@ -22,9 +22,10 @@ namespace TataisenergoTest.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddDbContext<ApplicationContext>(opt =>
-                opt.UseSqlServer(Configuration.GetConnectionString("ApplicationContext")));
+            services.AddDbContext<ApplicationDbContext>(opt =>
+                opt.UseSqlServer(Configuration.GetConnectionString("ApplicationDbContext")));
             services.AddScoped<IMessageService, MessageService>();
+            services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
             services.AddSwaggerGen();
             services.AddRouting(options => options.LowercaseUrls = true);
             services.AddCors(options => 

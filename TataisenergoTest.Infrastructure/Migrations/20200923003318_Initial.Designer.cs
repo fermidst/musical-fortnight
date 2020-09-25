@@ -9,7 +9,7 @@ using TataisenergoTest.Infrastructure;
 
 namespace TataisenergoTest.Infrastructure.Migrations
 {
-    [DbContext(typeof(ApplicationContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20200923003318_Initial")]
     partial class Initial
     {
